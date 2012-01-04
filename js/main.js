@@ -132,24 +132,24 @@ var director = document.getElementById('director').value = director;
 function saveItems(id){
 var d = new Date();
     var key= (d.getTime());
-var genre = document.getElementById('genre').value;
-var title = document.getElementById('title').value;
-var actor = document.getElementById('actor').value;
-var director = document.getElementById('director').value;
-var rating = document.getElementById('rating').value;
-var favorites = document.getElementById('favorites').value;
+var genre = $('#genre').val();
+var title = $('#title').val();
+var actor = $('#actor').val();
+var director = $('#director').val();
+var rating = $('#rating').val();
+var favorites = $('#favorites').val();
 if(favorites == "on"){
 var favorites = "Yes" // if favorite is checked say yes
 }else{
 var favorites = "No" // if not, say no
 }
-if(document.getElementById('yes').checked){
+if($('#yes').checked){
 var family = "This is a family movie"
 }else{
 var family = "This is not a family movie"
 }
-var release = document.getElementById('release').value;
-var description = document.getElementById('description').value;
+var release = $('#release').val();
+var description = $('#description').val();
 var allItems = [
 genre,
 title,
@@ -180,31 +180,32 @@ var favorites = value[5];
 var family = value[6];
 var release = value[7];
 var description = value[8];
-
-document.getElementById('genre').value = genre;
-document.getElementById('title').value = title;
-document.getElementById('actor').value = actor;
-document.getElementById('director').value = director;
-document.getElementById('rating').value = rating;
-document.getElementById('favorites').value = favorites;
+$('#genre').val(genre);
+$('#title').val(title);
+$('#actor').val(actor);
+$('#director').val(director);
+$('#rating').val(rating);
+$('#favorites').val(favorites);
 if(favorites == "Yes"){
-document.getElementById('favorites').setAttribute("checked", "checked");
+$('#favorites').attr('checked', 'checked');
+//document.getElementById('favorites').setAttribute("checked", "checked");
 }
 if(family == "This is a family movie"){
-document.getElementById('yes').setAttribute("checked", "checked");
+$('#yes').attr('checked', 'checked');
+//document.getElementById('yes').setAttribute("checked", "checked");
 }else{
-document.getElementById('no').setAttribute("checked", "checked");
+$('#no').attr('checked', 'checked');
+//document.getElementById('no').setAttribute("checked", "checked");
 }
-document.getElementById('release').value = release;
-document.getElementById('description').value = description;
+$('#release').val(release);
+$('#description').val(description);
 
 // show edit item button, hide submit button
-var editButton = document.getElementById('edit-item-button');
-editButton.style.display = "block";
-var subresButtons = document.getElementById('submit-reset-buttons');
-subresButtons.style.display = "none";
-var itemList = document.getElementById('list');
-itemList.style.display = "none";
+var editButton = $('#edit-item-button').css('display', 'block');
+var subresButtons = $('#submit-reset-buttons').css('display', 'none');
+var itemList = $('#list').css('display', 'none');
+//var itemList = document.getElementById('list');
+//itemList.style.display = "none";
 
 // when clicking editItem button
 document.getElementById('edit-item').onclick = function(){

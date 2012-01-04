@@ -6,76 +6,62 @@ Term: 12/01
 -->
 <html>
 <head>
-<meta charset="utf-8">
-<title>Movie Collection App</title>
-<meta name="description" content="Add Movie Page" />
-<meta name="keywords" content="" />
-<meta name="robots" content="" />
-<!-- Mobile viewport optimized: j.mp/bplateviewport -->
-<meta name="HandheldFriendly" content="True">
-<meta name="MobileOptimized" content="320"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Mobile IE needs ClearType for smoothing fonts -->
-<meta http-equiv="cleartype" content="on">
+	<meta charset="utf-8">
+	<title>Movie Collection App</title>
+	<meta name="description" content="Add Movie Page" />
+	<meta name="keywords" content="" />
+	<meta name="robots" content="" />
+	<!-- Mobile viewport optimized: j.mp/bplateviewport -->
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Mobile IE needs ClearType for smoothing fonts -->
+	<meta http-equiv="cleartype" content="on">
 
-<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.css" />
-<link rel="stylesheet" type="text/css" href="style.css" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.css" />
+	<link rel="stylesheet" type="text/css" href="style.css" />
 
-<!-- JavaScript is normally at the end of the body, except for Modernizr which enables HTML5 elements & feature detects -->
-<script src="js/libs/modernizr.custom.min.js"></script>
+	<!-- JavaScript is normally at the end of the body, except for Modernizr which enables HTML5 elements & feature detects -->
+	<script src="js/libs/modernizr.custom.min.js"></script>
 
 </head>
 <body>
 
-<div data-role="page">
-<div id="pagetitle">
-<img src="images/logo.png" align="left" width="30" height="20" alt="" title="" border="0" /><h1>My Movie Collection</h1>
-</div>
-<div data-role="content" class="content">
-<div id="cta">
-<img src="images/CTA.png" title="" alt="" border="0" width="266" height="179" />
-</div>
+	<div data-role="page">
+		<div id="pagetitle">
+			<img src="images/logo.png" align="left" width="30" height="20" alt="" title="" border="0" /><h1>My Movie Collection</h1>
+		</div>
+		<div data-role="content" class="content">
+			<div id="cta">
+				<img src="images/CTA.png" title="" alt="" border="0" width="266" height="179" />
+			</div>
+			
+			<div id="searchbar" data-role="fieldcontain">
+				 <label for="search">Search For A Movie:</label>
+				 <input type="search" name="moviesearch" id="search" value="" />
+			</div>
 
-<div id="searchbar" data-role="fieldcontain">
-     <label for="search">Search For A Movie:</label>
-     <input type="search" name="moviesearch" id="search" value="" />
-</div>
+			<div id="addnewbutton">
+				<p>Now you can keep a library of all your movies! Add movies to your library or use the search feature to easily find movies in your library!</p>
 
-<div id="addnewbutton">
-<p>Now you can keep a library of all your movies! Add movies to your library or use the search feature to easily find movies in your library!</p>
+				<p><a href="additem.html" data-role="button" data-icon="plus" data-theme="b">Add A New Movie</a></p>
+			</div>
 
-<p><a href="additem.html" data-role="button" data-icon="plus" data-theme="b">Add A New Movie</a></p>
-</div>
-
-<div id="searchbycat">
-<p>&nbsp;</p>
-<p>Browse Collection By Genre:</p>
-<p>&nbsp;</p>
-<ul data-role="listview">
-<li>
-<a href="#comedy"><h2>Comedy</h2></a>
-</li>
-<li>
-<a href="#drama"><h2>Drama</h2></a>
-</li>
-<li>
-<a href="#action"><h2>Action</h2></a>
-</li>
-<li>
-<a href="#horror"><h2>Horror</h2></a>
-</li>
-<li>
-<a href="#documentary"><h2>Documentary</h2></a>
-</li>
-<li>
-<a href="#other"><h2>Other</h2></a>
-</li>
-</ul>
-</div>
-
-</div>
-
-</div>
+			<div id="searchbycat">
+				<p>&nbsp;</p>
+				<p>Browse Collection By Genre:</p>
+				<p>&nbsp;</p>
+				<ul data-role="listview">
+					<li><a href="#comedy"><h2>Comedy</h2></a></li>
+					<li><a href="#drama"><h2>Drama</h2></a></li>
+					<li><a href="#action"><h2>Action</h2></a></li>
+					<li><a href="#horror"><h2>Horror</h2></a></li>
+					<li><a href="#documentary"><h2>Documentary</h2></a></li>
+					<li><a href="#other"><h2>Other</h2></a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 
 <!-- ///////////COMEDY MOVIES PAGE///////////-->
 <div data-role="page" id="comedy" data-add-back-btn="true">

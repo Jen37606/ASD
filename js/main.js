@@ -269,53 +269,46 @@ function clearItems(){
 
 // VALIDATE FORM FUNCTION ----------------------------
 function validateForm(){
-var getGenre = document.getElementById('genre').value;
-var getTitle = document.getElementById('title').value;
-var getActor = document.getElementById('actor').value;
-var getDirector = document.getElementById('director').value;
-var getDate = document.getElementById('release').value;
-
-/*
-if(getGenre == "choose"){ // if you didn't choose a genre than you get an alert and it returns to the form
-alert("You must choose a genre.");
-document.getElementById("genre").style.border = "1px solid red";
-return false;
-}
-*/
-
-if(getTitle == ""){ // must enter a title
-document.getElementById("title").style.border = "1px solid red";
-return false;
-}
-
-if(getDate == ""){
-document.getElementById("release").style.border = "1px solid red";
-return false;
-}else{
-document.getElementById("title").style.border = "1px solid #ccc";
-document.getElementById("genre").style.border = "1px solid #ccc";
-saveItems(); // if all is good than run the saveItems function
-}
+	var getGenre = $('#genre').val();
+	var getTitle = $('#title').val();
+	var getActor = $('#actor').val();
+	var getDirector = $('#director').val();
+	var getDate = $('#release').val();
+	
+	// Validate the whole form
+	//$(document).ready( function() {
+		var movieform = $('#addmovieform');
+		movieform.validate();
+	//});
+	if(getTitle == ""){ // must enter a title
+		$('#title').css('border', '1px solid red');
+		return false;
+	}
+	
+	if(getDate == ""){
+		$('#release').css('border', '1px solid red');
+		return false;
+	}else{
+		$('#title').css('border', '1px solid #ccc');
+		$('#genre').css('border', '1px solid #ccc');
+		saveItems(); // if all is good than run the saveItems function
+	}
 }
 
 
 function clickclear(thisfield, defaulttext) {
-if (thisfield.value == defaulttext) {
-thisfield.value = "";
-}
+	if (thisfield.value == defaulttext) {
+		thisfield.value = "";
+	}
 }
 
 function clickrecall(thisfield, defaulttext) {
-if (thisfield.value == "") {
-thisfield.value = defaulttext;
-}
+	if (thisfield.value == "") {
+		thisfield.value = defaulttext;
+	}
 }
 
-//$(document).ready(function(){
-var movieform = $('#addmovieform');
-movieform.validate();
-//});
-
+// Get Date Function
 $(document).ready( function() {
     var now = new Date();
     var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();

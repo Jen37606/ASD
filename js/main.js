@@ -314,3 +314,29 @@ $(document).ready( function() {
     var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
     $('#release').val(today);
 });
+
+// GET DATA FUNCTIONS!------------
+
+// JSON Data
+$('#jsonbutton').bind('click', function(){
+	$('#mydata').empty();
+	$.ajax({
+		url: 'xhr/data.json',
+		type: 'GET',
+		dataType: 'json',
+		success: function(response){
+        	for (var i=0, j=response.comedies.length; i<j; i++){
+				var jdata = response.comedies[i];
+				$(''+
+					'<li class="movietitle">'+
+						'<h3>'+ jdata.title +'</h3>'+
+						'<h4>'+ jdata.actors +'</h4>'+
+						'<p>'+ jdata.description +'</p>'+
+					'</li><hr />'
+				).appendTo('#mydata');
+				console.log(response);
+			}
+		}
+	});
+	return false;
+});

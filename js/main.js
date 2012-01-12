@@ -365,3 +365,29 @@ $('#xmlbutton').bind('click', function(){
 	});
 	return false;
 });
+
+//CSV Data
+$('#csvbutton').bind('click', function(){
+	$('#mydata').empty();
+	$.get('xhr/data.csv', function(data) {
+		// Assume that your entire CSV file is in the data variable.
+		// The "\n" is the string escape for the end-of-line character.
+		var lines = data.split("\n");
+		// The lines variable is now an array of lines of text.
+		for (var lineNum = 0; lineNum < lines.length; lineNum++) {
+			// Get the current line/row
+			var row = lines[lineNum];
+			var columns = row.split(",");
+			// The columns variable is now an array.
+			$(''+
+					'<li class="movietitle">'+
+						'<h3>'+ columns.title +'</h3>'+
+						//'<h4>'+ row.actors +'</h4>'+
+						//'<p>'+ row.description +'</p>'+
+					'</li><hr />'
+				).appendTo('#mydata');
+			console.log(columns);
+		} // for lineNum
+	});
+	return false;
+});

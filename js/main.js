@@ -1,7 +1,6 @@
 // GET ITEMS FUNCTION ----------------------------
 function getItems(){
-	var getListdiv = document.getElementById("list"); 
-	//$('#list'); This is not working???
+	var getListdiv = $('#list')[0];
 	
 	for(var i=0, len = localStorage.length; i < len; i++){
 		var key = localStorage.key(i);
@@ -189,8 +188,8 @@ function editItem(id){
 	$('#director').val(director);
 	$('#rating').val(rating);
 	if(favorites == "Yes"){
-		//$('#favorites').attr('checked', 'checked');
-		document.getElementById('favorites').setAttribute("checked", "checked");
+		$('#favorites').attr('checked', 'checked');
+		//document.getElementById('favorites').setAttribute("checked", "checked");
 	}
 	if(family == "This is a family movie"){
 		$('#yes').attr('checked', 'checked');
@@ -336,6 +335,32 @@ $('#jsonbutton').bind('click', function(){
 				).appendTo('#mydata');
 				console.log(response);
 			}
+		}
+	});
+	return false;
+});
+
+// XML Data
+$('#xmlbutton').bind('click', function(){
+	$('#mydata').empty();
+	$.ajax({
+		url: 'xhr/data.xml',
+		type: 'GET',
+		dataType: 'xml',
+		success: function(xml){
+			$(xml).find("movie").each(function(){
+   				var title = $(this).find('title').text();
+   				var actors = $(this).find('actors').text();
+   				var description = $(this).find('description').text();
+    			$(''+
+					'<li class="movietitle">'+
+						'<h3>'+ title +'</h3>'+
+						'<h4>'+ actors +'</h4>'+
+						'<p>'+ description +'</p>'+
+					'</li><hr />'
+				).appendTo('#mydata');
+				console.log(xml);
+			});
 		}
 	});
 	return false;

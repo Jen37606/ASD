@@ -366,28 +366,44 @@ $('#xmlbutton').bind('click', function(){
 	return false;
 });
 
+
 //CSV Data
 $('#csvbutton').bind('click', function(){
 	$('#mydata').empty();
-	$.get('xhr/data.csv', function(data) {
-		// Assume that your entire CSV file is in the data variable.
-		// The "\n" is the string escape for the end-of-line character.
-		var lines = data.split("\n");
-		// The lines variable is now an array of lines of text.
-		for (var lineNum = 0; lineNum < lines.length; lineNum++) {
-			// Get the current line/row
-			var row = lines[lineNum];
-			var columns = row.split(",");
-			// The columns variable is now an array.
+	 $.ajax({
+        type: "GET",
+        url: "xhr/data.csv",
+        dataType: "text",
+        success: function(data) {
+        	var allTextLines = data.split(/\r\n|\n/);
+    		var headers = allTextLines[0].split(',');
+    		var lines = []; // main array that hold each movie array
+
+			for (var i=1; i<allTextLines.length; i++) {
+				var data = allTextLines[i].split(',');
+				if (data.length == headers.length) {
+					var movies = []; // blank array for each movie
+					
+					for (var j=0; j<headers.length; j++) {
+						movies.push(data[j]); //puts each movie into the array
+					}
+					lines.push(movies); // puts the movie array into the main array
+				}
+				
+			}
+			
+			for (var m=0; m<lines.length; m++){
+				var amovie = lines[m];
 			$(''+
 					'<li class="movietitle">'+
-						'<h3>'+ columns.title +'</h3>'+
-						//'<h4>'+ row.actors +'</h4>'+
-						//'<p>'+ row.description +'</p>'+
+						'<h3>'+ amovie[0] +'</h3>'+
+						'<h4>'+ amovie[1] +'</h4>'+
+						'<p>'+ amovie[2] +'</p>'+
 					'</li><hr />'
 				).appendTo('#mydata');
-			console.log(columns);
-		} // for lineNum
+			console.log(lines);	
+			}
+        }
 	});
 	return false;
 });

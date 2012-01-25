@@ -59,35 +59,37 @@ $('#movie').live("pageshow", function(){
 });
 
 //SAVE ITEMS FUNCTION ----------- couch
-function addMovie(id){
-    var title = $('#title').val();
-    var key= ("movie:" + title);
-	var actor = $('#actor').val();
-	var description = $('#description').val();
-	var allItems = [
-		title,
-		actor,
-		description
-	];
-
-	var doc = {
-		"_id": "movie:" + title,
-		"title": title,
-		"actors": actor,
-		"description": description
-	};
-	$.couch.db("asdproject").saveDoc(doc, {
-    	success: function(data) {
-        	console.log(data);
-        	alert("Your movie was added!");
-    	},
-    	error: function(status) {
-        	console.log(status);
-        	alert("The movie was not added.");
-    	}
+$('#addmovieform').bind('click', function(){
+	 $.ajax({
+	 	url: '_view/movies',
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+			var title = $('#title').val();
+			var key= ("movie:" + title);
+			var actor = $('#actor').val();
+			var description = $('#description').val();
+			
+			var doc = {
+				"_id": "movie:" + title,
+				"title": title,
+				"actors": actor,
+				"description": description
+			};
+			$.couch.db("asdproject").saveDoc(doc, {
+				success: function(data) {
+					console.log(data);
+					alert("Your movie was added!");
+				},
+				error: function(status) {
+					console.log(status);
+					alert("The movie was not added.");
+				}
+			});
+		}
+		//location.reload();
 	});
-	//location.reload();
-}
+});
 
 
 

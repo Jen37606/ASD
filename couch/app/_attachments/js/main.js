@@ -60,15 +60,9 @@ $('#movie').live("pageshow", function(){
 
 //SAVE ITEMS FUNCTION ----------- couch
 $('#submit').bind('click', function(){
-	 $.ajax({
-	 	url: '_view/movies',
-        type: "PUT",
-        dataType: "json",
-        success: function(data) {
 			var title = $('#title').val();
 			var actor = $('#actor').val();
 			var description = $('#description').val();
-			
 			var doc = {
 				"_id": "movie:" + title,
 				"title": title,
@@ -86,9 +80,6 @@ $('#submit').bind('click', function(){
 					alert("The movie was not added.");
 				}
 			});
-		}
-		//location.reload();
-	});
 	return false;
 });
 

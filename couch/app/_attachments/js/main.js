@@ -59,7 +59,7 @@ $('#movie').live("pageshow", function(){
 });
 
 //SAVE ITEMS FUNCTION ----------- couch
-$('#addmovieform').bind('click', function(){
+$('#addmoviebutton').bind('click', function(){
 	 $.ajax({
 	 	url: '_view/movies',
         type: "PUT",

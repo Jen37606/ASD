@@ -62,7 +62,7 @@ $('#movie').live("pageshow", function(){
 $('#addmovieform').bind('click', function(){
 	 $.ajax({
 	 	url: '_view/movies',
-        type: "GET",
+        type: "PUT",
         dataType: "json",
         success: function(data) {
 			var title = $('#title').val();

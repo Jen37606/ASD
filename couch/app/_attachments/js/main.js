@@ -18,6 +18,80 @@ $('#home').live("pageshow", function(){
 	});
 });
 
+var urlVars = function(){
+	var urlData = $($.mobile.activePage).data("url");
+	var urlParts = urlData.split('?');
+	var urlPairs = urlParts[1].split('&');
+	var urlValues = {};
+	for(var pair in urlPairs){
+		var keyValue = urlPairs[pair].split('=');
+		var key = decodeURIComponent(keyValue[0]);
+		var value = decodeURIComponent(keyValue[1]);
+		urlValues[key] = value;
+	}
+	return urlValues;
+};
+
+$('#movie').live("pageshow", function(){
+	var movie = urlVars()["movie"];
+	//console.log(movie);
+	$.couch.db("asdproject").view("movieapp/movies", {
+		key: "movie:" + movie,
+			success: function(data) {
+			console.log(movie);
+				$.each(data.rows, function(index, value){
+					var title = value.value.title;
+					var actors = value.value.actors;
+					var description = value.value.description;
+					$('#movieItems').append(
+						$('<h3>').text(title),
+						$('<h5>').text("Actors: " + actors),
+						$('<p>').text(description),
+						$('<a>')
+							.attr("href", "#")
+							.attr("onclick", "deleteMovie()")
+							.text("Delete")
+					)
+				});
+				$('#movieItems').listview('refresh');
+			}
+	});
+});
+
+//SAVE ITEMS FUNCTION ----------- couch
+function addMovie(id){
+    var title = $('#title').val();
+    var key= ("movie:" + title);
+	var actor = $('#actor').val();
+	var description = $('#description').val();
+	var allItems = [
+		title,
+		actor,
+		description
+	];
+
+	var doc = {
+		"_id": "movie:" + title,
+		"title": title,
+		"actors": actor,
+		"description": description
+	};
+	$.couch.db("asdproject").saveDoc(doc, {
+    	success: function(data) {
+        	console.log(data);
+        	alert("Your movie was added!");
+    	},
+    	error: function(status) {
+        	console.log(status);
+        	alert("The movie was not added.");
+    	}
+	});
+	//location.reload();
+}
+
+
+
+
 // GET ITEMS FUNCTION ----------------------------
 function getItems(){
 	var getListdiv = $('#list')[0];

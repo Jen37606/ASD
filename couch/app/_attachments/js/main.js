@@ -59,14 +59,13 @@ $('#movie').live("pageshow", function(){
 });
 
 //SAVE ITEMS FUNCTION ----------- couch
-$('#addmoviebutton').bind('click', function(){
+$('#submit').bind('click', function(){
 	 $.ajax({
 	 	url: '_view/movies',
         type: "PUT",
         dataType: "json",
         success: function(data) {
 			var title = $('#title').val();
-			var key= ("movie:" + title);
 			var actor = $('#actor').val();
 			var description = $('#description').val();
 			
@@ -76,6 +75,7 @@ $('#addmoviebutton').bind('click', function(){
 				"actors": actor,
 				"description": description
 			};
+			console.log(doc);
 			$.couch.db("asdproject").saveDoc(doc, {
 				success: function(data) {
 					console.log(data);
@@ -89,6 +89,7 @@ $('#addmoviebutton').bind('click', function(){
 		}
 		//location.reload();
 	});
+	return false;
 });
 
 

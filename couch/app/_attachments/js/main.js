@@ -1,18 +1,3 @@
-var urlVars = function(){
-	var urlData = $($.mobile.activePage).data("url");
-	var urlParts = urlData.split('?');
-	var urlPairs = urlParts[1].split('&');
-	var urlValues = {};
-	for(var pair in urlPairs){
-		var keyValue = urlPairs[pair].split('=');
-		var key = decodeURIComponent(keyValue[0]);
-		var value = decodeURIComponent(keyValue[1]);
-		urlValues[key] = value;
-	}
-	console.log(urlValues);
-	return urlValues;
-};
-
 // GET MOVIES FUNCTION ------ couch
 $('#browsemovies').live("pageshow", function(){
 	$.couch.db("asdproject").view("movieapp/movies", {
@@ -33,93 +18,50 @@ $('#browsemovies').live("pageshow", function(){
 	return false;
 });
 
-$('#movie').live("pageshow", function(){
+var urlVars = function(){
+	var urlData = $($.mobile.activePage).data("url");
+	var urlParts = urlData.split('?');
+	var urlPairs = urlParts[1].split('&');
+	var urlValues = {};
+	for(var pair in urlPairs){
+		var keyValue = urlPairs[pair].split('=');
+		var key = decodeURIComponent(keyValue[0]);
+		var value = decodeURIComponent(keyValue[1]);
+		urlValues[key] = value;
+	}
+	return urlValues;
+};
+
+$('#thismovie').live("pageshow", function(){
 	var movie = urlVars()["movie"];
 	var key = "movie:" + movie;
-	console.log(key);
 	$.couch.db("asdproject").openDoc(key, {
-		success: function(data) {
-			console.log(data);
-			alert("yay!");
-			$.each(data.rows, function(index, value){
-				var item = (value.value || value.doc);
-				var title = item.title;
-				$('<h2>'+ title +'</h2>'
-				).appendTo('#movieInfo');
-				
-			});
-		},
-		error: function(status) {
-			console.log(status);
-		}
+    	success: function(data) {
+        	title = data.title;
+        	actors = data.actors;
+        	description = data.description;
+        	$('<h2>'+ title +'</h2>' +
+        	  '<h3>'+ actors +'</h3>' +
+        	  '<p>'+ description +'</p>'
+        	).appendTo('#movieInfo');
+        },
+    	error: function(status) {
+        	console.log(status);
+    	}
 	});
 });
 
 /*
-$('#movie').live("pageshow", function(){
+$('#thismovie').live("pageshow", function(){
 	var movie = urlVars()["movie"];
 	console.log(movie);
 	$.couch.db("asdproject").view("movieapp/movies", {
 		key: "movie:" + movie
 	});
 });
-
-
-
-// GET MOVIES FUNCTION ------ couch
-$('#browsemovies').live("pageshow", function(){
-	var movie = urlVars()["movie"];
-	$.couch.db("asdproject").view("movieapp/movies", {
-		key: "movie:" + movie,
-		success: function(data) {
-			console.log(movie);
-			$.each(data.rows, function(index, value){
-				var item = (value.value || value.doc);
-				var title = movie.value.title;
-				$(''+
-					'<li class="movietitle">'+
-						'<a href="movie.html?movie=' + item + '">'+ title +'</a>'+
-					'</li><hr />'
-				).appendTo('#browsemovielist');
-				console.log(data);
-			});
-			$('#browsemovies').listview('refresh');
-		},
-		error: function(status) {
-			console.log(status);
-		}
-	});
-	return false;
-});
-
-
-
-
-
-
-$('#browsemovies').live("pageshow", function(){
-	$.couch.db("asdproject").view("movieapp/movies", {
-		success: function(data) {
-			console.log(data);
-			$.each(data.rows, function(index, value){
-				var title = value.value.title;
-				var actors = value.value.actors;
-				var description = value.value.description;
-					$('#movieItems').append(
-						$('<h3>').text(title),
-						$('<h5>').text("Actors: " + actors),
-						$('<p>').text(description),
-						$('<a>')
-							.attr("href", "#")
-							.attr("onclick", "deleteMovie()")
-							.text("Delete")
-					)
-				});
-				$('#movieItems').listview('refresh');
-			}
-	});
-});
 */
+
+
 //SAVE ITEMS FUNCTION ----------- couch
 $('#submit').bind('click', function(){
 			var title = $('#title').val();

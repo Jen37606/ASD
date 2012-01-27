@@ -1,23 +1,3 @@
-$('#home').live("pageshow", function(){
-	$.couch.db("asdproject").view("movieapp/movies", {
-		success: function(data) {
-			//console.log(data);
-			$('#homeItems').empty();
-			$.each(data.rows, function(index, value){
-				var item = (value.value || value.doc);
-				$('#homeItems').append(
-					$('<li>').append(
-						$('<a>')
-							.attr("href", "movie.html?movie=" + item.title)
-							.text(item.title)
-					)
-				)
-			});
-			$('#homeItems').listview('refresh');
-		}
-	});
-});
-
 var urlVars = function(){
 	var urlData = $($.mobile.activePage).data("url");
 	var urlParts = urlData.split('?');
@@ -29,20 +9,102 @@ var urlVars = function(){
 		var value = decodeURIComponent(keyValue[1]);
 		urlValues[key] = value;
 	}
+	console.log(urlValues);
 	return urlValues;
 };
 
+// GET MOVIES FUNCTION ------ couch
+$('#browsemovies').live("pageshow", function(){
+	$.couch.db("asdproject").view("movieapp/movies", {
+		success: function(data) {
+			$.each(data.rows, function(index, value){
+				var item = (value.value || value.doc);
+				var title = item.title;
+				$('<li class="movietitle">'+
+					'<a href="movie.html?movie=' + title + '"><h2>'+ title +'</h2></a>'+
+				  '</li><hr />'
+				).appendTo('#browsemovielist');
+				
+			});
+			console.log(data);
+			//$('#browsemovies').listview('refresh');
+		}
+	});
+	return false;
+});
+
 $('#movie').live("pageshow", function(){
 	var movie = urlVars()["movie"];
-	//console.log(movie);
+	var key = "movie:" + movie;
+	console.log(key);
+	$.couch.db("asdproject").openDoc(key, {
+		success: function(data) {
+			console.log(data);
+			alert("yay!");
+			$.each(data.rows, function(index, value){
+				var item = (value.value || value.doc);
+				var title = item.title;
+				$('<h2>'+ title +'</h2>'
+				).appendTo('#movieInfo');
+				
+			});
+		},
+		error: function(status) {
+			console.log(status);
+		}
+	});
+});
+
+/*
+$('#movie').live("pageshow", function(){
+	var movie = urlVars()["movie"];
+	console.log(movie);
+	$.couch.db("asdproject").view("movieapp/movies", {
+		key: "movie:" + movie
+	});
+});
+
+
+
+// GET MOVIES FUNCTION ------ couch
+$('#browsemovies').live("pageshow", function(){
+	var movie = urlVars()["movie"];
 	$.couch.db("asdproject").view("movieapp/movies", {
 		key: "movie:" + movie,
-			success: function(data) {
+		success: function(data) {
 			console.log(movie);
-				$.each(data.rows, function(index, value){
-					var title = value.value.title;
-					var actors = value.value.actors;
-					var description = value.value.description;
+			$.each(data.rows, function(index, value){
+				var item = (value.value || value.doc);
+				var title = movie.value.title;
+				$(''+
+					'<li class="movietitle">'+
+						'<a href="movie.html?movie=' + item + '">'+ title +'</a>'+
+					'</li><hr />'
+				).appendTo('#browsemovielist');
+				console.log(data);
+			});
+			$('#browsemovies').listview('refresh');
+		},
+		error: function(status) {
+			console.log(status);
+		}
+	});
+	return false;
+});
+
+
+
+
+
+
+$('#browsemovies').live("pageshow", function(){
+	$.couch.db("asdproject").view("movieapp/movies", {
+		success: function(data) {
+			console.log(data);
+			$.each(data.rows, function(index, value){
+				var title = value.value.title;
+				var actors = value.value.actors;
+				var description = value.value.description;
 					$('#movieItems').append(
 						$('<h3>').text(title),
 						$('<h5>').text("Actors: " + actors),
@@ -57,7 +119,7 @@ $('#movie').live("pageshow", function(){
 			}
 	});
 });
-
+*/
 //SAVE ITEMS FUNCTION ----------- couch
 $('#submit').bind('click', function(){
 			var title = $('#title').val();

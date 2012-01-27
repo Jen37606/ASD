@@ -45,7 +45,7 @@ $('#thismovie').live("pageshow", function(){
         	  '<h3>'+ actors +'</h3>' +
         	  '<p>'+ description +'</p>' +
         	  '<p><a href="#" id="edit-movie-link">Edit Movie</a>' + 
-        	  ' | <a href="#" id="delete-movie-link">Delete Movie</a></p>'
+        	  ' | <a href="#" id="delete-movie-link" onclick="deleteItem()">Delete Movie</a></p>'
         	).appendTo('#movieInfo');
         },
     	error: function(status) {
@@ -97,24 +97,30 @@ $('#edit-movie-link').bind('click', function(){
 });
 
 //DELETE ITEM FUNCTION
-$('#delete-movie-link').bind('click', function(){
+function deleteItem(id){
 	var movie = urlVars()["movie"];
 	var key = "movie:" + movie;
-	var ask = confirm("Are you sure?");
-	if(ask){
-		$.couch.db("asdproject").removeDoc(key, {
-			success: function(data) {
-				console.log(data);
-			},
-			error: function(status) {
-				console.log(status);
+	
+	$.couch.db("asdproject").openDoc(key, {
+    	success: function(data) {
+    	console.log(key);
+			var ask = confirm("Are you sure?");
+			if(ask){
+				$.couch.db("asdproject").removeDoc(key, {
+					success: function(data) {
+						console.log(data);
+					},
+					error: function(status) {
+						console.log(status);
+					}
+				});
+			}else{
+				alert("Item not removed.");
 			}
-		});
-		window.location.reload();
-	}else{
-		alert("Item not removed.");
-	}
-});
+		}
+	});
+	window.location = 'browse.html';
+}
 	
 
 

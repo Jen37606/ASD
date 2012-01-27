@@ -1,4 +1,4 @@
-// GET MOVIES FUNCTION ------ couch
+// GET MOVIES FUNCTION
 $('#browsemovies').live("pageshow", function(){
 	$.couch.db("asdproject").view("movieapp/movies", {
 		success: function(data) {
@@ -7,17 +7,17 @@ $('#browsemovies').live("pageshow", function(){
 				var title = item.title;
 				$('<li class="movietitle">'+
 					'<a href="movie.html?movie=' + title + '"><h2>'+ title +'</h2></a>'+
-				  '</li><hr />'
+				  '</li>'
 				).appendTo('#browsemovielist');
 				
 			});
 			console.log(data);
-			//$('#browsemovies').listview('refresh');
 		}
 	});
 	return false;
 });
 
+// GET MOVIE KEY
 var urlVars = function(){
 	var urlData = $($.mobile.activePage).data("url");
 	var urlParts = urlData.split('?');
@@ -32,6 +32,7 @@ var urlVars = function(){
 	return urlValues;
 };
 
+// DISPLAY THAT MOVIE
 $('#thismovie').live("pageshow", function(){
 	var movie = urlVars()["movie"];
 	var key = "movie:" + movie;
@@ -42,7 +43,9 @@ $('#thismovie').live("pageshow", function(){
         	description = data.description;
         	$('<h2>'+ title +'</h2>' +
         	  '<h3>'+ actors +'</h3>' +
-        	  '<p>'+ description +'</p>'
+        	  '<p>'+ description +'</p>' +
+        	  '<p><a href="#" id="edit-movie-link">Edit Movie</a>' + 
+        	  ' | <a href="#" id="delete-movie-link">Delete Movie</a></p>'
         	).appendTo('#movieInfo');
         },
     	error: function(status) {
@@ -51,18 +54,71 @@ $('#thismovie').live("pageshow", function(){
 	});
 });
 
-/*
-$('#thismovie').live("pageshow", function(){
+//GO TO EDIT THAT MOVIE
+$('#edit-movie-link').bind('click', function(){
 	var movie = urlVars()["movie"];
-	console.log(movie);
-	$.couch.db("asdproject").view("movieapp/movies", {
-		key: "movie:" + movie
+	var key = "movie:" + movie;
+	console.log("key" + key);
+	window.location = 'additems.html';
+	location.reload();
+	$.couch.db("asdproject").openDoc(key, {
+    	success: function(data) {
+        	title = data.title;
+        	actors = data.actors;
+        	description = data.description;
+        	$('#title').val(title);
+			$('#actor').val(actors);
+			$('#description').val(description);
+        
+			// show edit item button, hide submit button
+			var editButton = $('#edit-item-button').css('display', 'block');
+			var subresButtons = $('#submit-reset-buttons').css('display', 'none');
+			var itemList = $('#list').css('display', 'none');
+			
+			//SAVE EDIT CHANGES
+			$('#edit-item').bind('click', function(){
+				console.log("edit-item button was pressed");
+				data.title = $('#title').val();
+				data.actors = $('#actor').val();
+				data.description = $('#description').val();
+				
+				$.couch.db("asdproject").saveDoc(key, {
+					success: function(data) {
+						console.log(data);
+					},
+					error: function(status) {
+        				console.log(status);
+    				}
+				});
+			});
+		}
 	});
+	
 });
-*/
+
+//DELETE ITEM FUNCTION
+$('#delete-movie-link').bind('click', function(){
+	var movie = urlVars()["movie"];
+	var key = "movie:" + movie;
+	var ask = confirm("Are you sure?");
+	if(ask){
+		$.couch.db("asdproject").removeDoc(key, {
+			success: function(data) {
+				console.log(data);
+			},
+			error: function(status) {
+				console.log(status);
+			}
+		});
+		window.location.reload();
+	}else{
+		alert("Item not removed.");
+	}
+});
+	
 
 
-//SAVE ITEMS FUNCTION ----------- couch
+//SAVE ITEMS FUNCTION
 $('#submit').bind('click', function(){
 			var title = $('#title').val();
 			var actor = $('#actor').val();
@@ -87,6 +143,151 @@ $('#submit').bind('click', function(){
 	return false;
 });
 
+//SIMPLE FILED CLEAR FUNCTIONS
+function clickclear(thisfield, defaulttext) {
+	if (thisfield.value == defaulttext) {
+		thisfield.value = "";
+	}
+}
+
+function clickrecall(thisfield, defaulttext) {
+	if (thisfield.value == "") {
+		thisfield.value = defaulttext;
+	}
+}
+
+// GET DATE FUNCTION
+$(document).ready( function() {
+    var now = new Date();
+    var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+    $('#release').val(today);
+});
+
+
+// GET DATA FUNCTIONS!------------
+
+// JSON Data
+$('#jsonbutton').bind('click', function(){
+	$('#mydata').empty();
+	$.ajax({
+		url: 'xhr/data.json',
+		type: 'GET',
+		dataType: 'json',
+		success: function(response){
+        	for (var i=0, j=response.comedies.length; i<j; i++){
+				var jdata = response.comedies[i];
+				$(''+
+					'<li class="movietitle">'+
+						'<h3>'+ jdata.title +'</h3>'+
+						'<h4>'+ jdata.actors +'</h4>'+
+						'<p>'+ jdata.description +'</p>'+
+					'</li><hr />'
+				).appendTo('#mydata');
+				console.log(response);
+			}
+		}
+	});
+	return false;
+});
+
+// XML Data
+$('#xmlbutton').bind('click', function(){
+	$('#mydata').empty();
+	$.ajax({
+		url: 'xhr/data.xml',
+		type: 'GET',
+		dataType: 'xml',
+		success: function(xml){
+			$(xml).find("movie").each(function(){
+   				var title = $(this).find('title').text();
+   				var actors = $(this).find('actors').text();
+   				var description = $(this).find('description').text();
+    			$(''+
+					'<li class="movietitle">'+
+						'<h3>'+ title +'</h3>'+
+						'<h4>'+ actors +'</h4>'+
+						'<p>'+ description +'</p>'+
+					'</li><hr />'
+				).appendTo('#mydata');
+				console.log(xml);
+			});
+		}
+	});
+	return false;
+});
+
+
+//CSV Data
+$('#csvbutton').bind('click', function(){
+	$('#mydata').empty();
+	 $.ajax({
+        type: "GET",
+        url: "xhr/data.csv",
+        dataType: "text",
+        success: function(data) {
+        	var allTextLines = data.split(/\r\n|\n/);
+    		var headers = allTextLines[0].split(',');
+    		var lines = []; // main array that hold each movie array
+
+			for (var i=1; i<allTextLines.length; i++) {
+				var data = allTextLines[i].split(',');
+				if (data.length == headers.length) {
+					var movies = []; // blank array for each movie
+					
+					for (var j=0; j<headers.length; j++) {
+						movies.push(data[j]); //puts each movie into the array
+					}
+					lines.push(movies); // puts the movie array into the main array
+				}
+				
+			}
+			
+			for (var m=0; m<lines.length; m++){
+				var amovie = lines[m];
+			$(''+
+					'<li class="movietitle">'+
+						'<h3>'+ amovie[0] +'</h3>'+
+						'<h4>'+ amovie[1] +'</h4>'+
+						'<p>'+ amovie[2] +'</p>'+
+					'</li><hr />'
+				).appendTo('#mydata');
+			console.log(lines);	
+			}
+        }
+	});
+	return false;
+});
+
+// Couch Data
+$('#couchbutton').bind('click', function(){
+	$('#mydata').empty();
+	$.ajax({
+		url: '_view/movies',
+		dataType: 'json',
+		success: function(data){
+			$.each(data.rows, function(index, movie){
+   				var title = movie.value.title;
+   				var actors = movie.value.actors;
+   				var description = movie.value.description;
+    			$(''+
+					'<li class="movietitle">'+
+						'<h3>'+ title +'</h3>'+
+						'<h4>'+ actors +'</h4>'+
+						'<p>'+ description +'</p>'+
+					'</li><hr />'
+				).appendTo('#mydata');
+				console.log(data);
+			});
+		}
+	});
+	return false;
+});
+
+
+
+//////////////////////////////////////////////////////////////////////
+// ================================================================ //
+// OLD FUNCTIONS BELOW
 
 
 
@@ -386,141 +587,4 @@ function validateForm(){
 	}
 }
 
-
-function clickclear(thisfield, defaulttext) {
-	if (thisfield.value == defaulttext) {
-		thisfield.value = "";
-	}
-}
-
-function clickrecall(thisfield, defaulttext) {
-	if (thisfield.value == "") {
-		thisfield.value = defaulttext;
-	}
-}
-
-// Get Date Function
-$(document).ready( function() {
-    var now = new Date();
-    var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
-    $('#release').val(today);
-});
-
-// GET DATA FUNCTIONS!------------
-
-// JSON Data
-$('#jsonbutton').bind('click', function(){
-	$('#mydata').empty();
-	$.ajax({
-		url: 'xhr/data.json',
-		type: 'GET',
-		dataType: 'json',
-		success: function(response){
-        	for (var i=0, j=response.comedies.length; i<j; i++){
-				var jdata = response.comedies[i];
-				$(''+
-					'<li class="movietitle">'+
-						'<h3>'+ jdata.title +'</h3>'+
-						'<h4>'+ jdata.actors +'</h4>'+
-						'<p>'+ jdata.description +'</p>'+
-					'</li><hr />'
-				).appendTo('#mydata');
-				console.log(response);
-			}
-		}
-	});
-	return false;
-});
-
-// XML Data
-$('#xmlbutton').bind('click', function(){
-	$('#mydata').empty();
-	$.ajax({
-		url: 'xhr/data.xml',
-		type: 'GET',
-		dataType: 'xml',
-		success: function(xml){
-			$(xml).find("movie").each(function(){
-   				var title = $(this).find('title').text();
-   				var actors = $(this).find('actors').text();
-   				var description = $(this).find('description').text();
-    			$(''+
-					'<li class="movietitle">'+
-						'<h3>'+ title +'</h3>'+
-						'<h4>'+ actors +'</h4>'+
-						'<p>'+ description +'</p>'+
-					'</li><hr />'
-				).appendTo('#mydata');
-				console.log(xml);
-			});
-		}
-	});
-	return false;
-});
-
-
-//CSV Data
-$('#csvbutton').bind('click', function(){
-	$('#mydata').empty();
-	 $.ajax({
-        type: "GET",
-        url: "xhr/data.csv",
-        dataType: "text",
-        success: function(data) {
-        	var allTextLines = data.split(/\r\n|\n/);
-    		var headers = allTextLines[0].split(',');
-    		var lines = []; // main array that hold each movie array
-
-			for (var i=1; i<allTextLines.length; i++) {
-				var data = allTextLines[i].split(',');
-				if (data.length == headers.length) {
-					var movies = []; // blank array for each movie
-					
-					for (var j=0; j<headers.length; j++) {
-						movies.push(data[j]); //puts each movie into the array
-					}
-					lines.push(movies); // puts the movie array into the main array
-				}
-				
-			}
-			
-			for (var m=0; m<lines.length; m++){
-				var amovie = lines[m];
-			$(''+
-					'<li class="movietitle">'+
-						'<h3>'+ amovie[0] +'</h3>'+
-						'<h4>'+ amovie[1] +'</h4>'+
-						'<p>'+ amovie[2] +'</p>'+
-					'</li><hr />'
-				).appendTo('#mydata');
-			console.log(lines);	
-			}
-        }
-	});
-	return false;
-});
-
-// Couch Data
-$('#couchbutton').bind('click', function(){
-	$('#mydata').empty();
-	$.ajax({
-		url: '_view/movies',
-		dataType: 'json',
-		success: function(data){
-			$.each(data.rows, function(index, movie){
-   				var title = movie.value.title;
-   				var actors = movie.value.actors;
-   				var description = movie.value.description;
-    			$(''+
-					'<li class="movietitle">'+
-						'<h3>'+ title +'</h3>'+
-						'<h4>'+ actors +'</h4>'+
-						'<p>'+ description +'</p>'+
-					'</li><hr />'
-				).appendTo('#mydata');
-				console.log(data);
-			});
-		}
-	});
-	return false;
-});
+// END OF OLD FUNCTIONS
